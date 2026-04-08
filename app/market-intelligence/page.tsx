@@ -2,6 +2,7 @@
 'use client';
 
 import AuthGuard from '@/components/auth/AuthGuard';
+import { PieLabelRenderProps } from 'recharts';
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -761,19 +762,24 @@ export default function MarketIntelligencePage() {
                   <ResponsiveContainer width="100%" height={250}>
                     <PieChart>
                       <Pie
-                        data={categoryDistribution}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {categoryDistribution.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
+  data={categoryDistribution}
+  cx="50%"
+  cy="50%"
+  labelLine={false}
+  label={(props: PieLabelRenderProps) => {
+    const { name, percent } = props;
+    const safeName = typeof name === 'string' ? name : '';
+    const safePercent = typeof percent === 'number' ? percent : 0;
+    return `${safeName} ${(safePercent * 100).toFixed(0)}%`;
+  }}
+  outerRadius={80}
+  fill="#8884d8"
+  dataKey="value"
+>
+  {categoryDistribution.map((entry, index) => (
+    <Cell key={`cell-${index}`} fill={entry.color} />
+  ))}
+</Pie>
                       <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.95)', borderRadius: '12px', border: 'none' }} />
                     </PieChart>
                   </ResponsiveContainer>

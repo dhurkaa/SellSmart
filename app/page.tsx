@@ -1131,23 +1131,32 @@ export default function CompanyHome() {
           </section>
 
           {/* Session Error Banner */}
-          {sessionError && sessionError.type !== 'unauthorized' && (
-            <div className="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">⚠️</span>
-                <div>
-                  <div className="font-semibold text-amber-800">Problem me lidhjen</div>
-                  <div className="text-sm text-amber-600">{sessionError.message}</div>
-                </div>
-              </div>
-              <button
-                onClick={retryLastRequest}
-                className="px-4 py-2 rounded-xl bg-amber-100 text-amber-700 font-medium text-sm hover:bg-amber-200 transition-all"
-              >
-                Provo Përsëri
-              </button>
-            </div>
-          )}
+          {/* Session Error Banner */}
+{sessionError && (() => {
+  // Type guard për të siguruar që TypeScript e di që sessionError nuk është null
+  const error = sessionError;
+  if (error.type === 'unauthorized') return null;
+  
+  return (
+    <div className="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <span className="text-2xl">⚠️</span>
+        <div>
+          <div className="font-semibold text-amber-800">
+            {error.type === 'network' ? 'Problem me rrjetin' : 'Timeout i kërkesës'}
+          </div>
+          <div className="text-sm text-amber-600">{error.message}</div>
+        </div>
+      </div>
+      <button
+        onClick={retryLastRequest}
+        className="px-4 py-2 rounded-xl bg-amber-100 text-amber-700 font-medium text-sm hover:bg-amber-200 transition-all"
+      >
+        Provo Përsëri
+      </button>
+    </div>
+  );
+})()}
 
           <div className="grid grid-cols-1 2xl:grid-cols-12 gap-6">
             {/* Left Sidebar - Enhanced Design */}
