@@ -1,41 +1,98 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
 # SellSmart
-AI marketplace listing and pricing optimizer powered Dhurim.
->>>>>>> 243876c6a6cf0ee37315af1bdd60342701c768cf
+
+SellSmart is a smart product valuation and listing assistant designed to help users prepare product data, upload images, and generate more structured, marketplace-ready valuations. This project focuses on a smoother dashboard experience, safer request handling, clearer user feedback, and stronger overall stability.
+
+## Features
+
+- AI-assisted product valuation flow
+- Image upload and preview handling
+- Valuation history with reload support
+- Dashboard with state-aware feedback
+- Authentication-protected routes
+- Demo data loading for testing and presentation
+
+## Tech Stack
+
+- Next.js
+- TypeScript
+- Supabase
+- Vercel
+
+## Running Locally
+
+1. Clone the repository:
+
+git clone https://github.com/dhurkaa/SellSmart.git
+cd SellSmart
+Install dependencies:
+npm install
+Create a .env.local file in the root of the project.
+Add the required environment variables:
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+Start the development server:
+npm run dev
+Environment Variables
+
+Create a .env.local file and add:
+
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+
+If additional variables are used in your local setup, add them here as well.
+
+Live Project
+GitHub Repository: https://github.com/dhurkaa/SellSmart
+Live URL: https://sell-smart-six.vercel.app
+
+Debugging, Review & Hardening Update
+
+Bug Fixed
+The dashboard previously did not handle missing data reliably.
+The retry flow was fixed so it now resends the last real request instead of using unstable state.
+History loading was improved to correctly preserve and restore category and businessGoal.
+Image handling was improved so the primary image no longer remains empty after deletion.
+UX / Feedback Improvements
+Added success messages for:
+valuation generation
+image uploads
+demo data loading
+opening a valuation from history
+Improved error messages for:
+timeout
+network errors
+invalid image
+maximum image count
+invalid form fields
+Strengthened double-submit protection using isSubmitting
+Improved button safety during loading states
+Added clearer retry and session-expiry feedback
+
+Refactoring / Cleanup
+Added pendingRequestRef to preserve the latest stable request payload
+Extracted payload construction into buildPendingRequest
+Improved callAssistant logic for better request consistency
+Cleaned up history and image-handling logic
+Added cleanup for image preview URLs
+Hardening / Stability
+Added stronger validation for:
+productName
+location
+category
+condition
+composer
+image type
+image size
+image count
+Limited retry flow to a maximum of 3 attempts
+Improved session and network state handling
+Preserved AuthGuard for route protection
+Added clearer handling for session expiry
+Goal of This Update
+
+This week’s work focused on making the project:
+
+more stable
+easier to demo
+clearer for the user
+harder to break in real edge cases
