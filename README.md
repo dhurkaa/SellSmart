@@ -1,98 +1,131 @@
-# SellSmart
+# SellSmart Demo Plan
 
-SellSmart is a smart product valuation and listing assistant designed to help users prepare product data, upload images, and generate more structured, marketplace-ready valuations. This project focuses on a smoother dashboard experience, safer request handling, clearer user feedback, and stronger overall stability.
+## Project overview
 
-## Features
+SellSmart is an AI-assisted business intelligence dashboard for product pricing, competitor analysis, sales tracking, reporting, and accounting insights.
 
-- AI-assisted product valuation flow
-- Image upload and preview handling
-- Valuation history with reload support
-- Dashboard with state-aware feedback
-- Authentication-protected routes
-- Demo data loading for testing and presentation
+The project is designed for small and medium businesses that sell physical products and want to make better pricing decisions. Instead of guessing prices manually, SellSmart helps the business compare competitor prices, understand market signals, check margins, and receive clearer pricing recommendations.
 
-## Tech Stack
+The main business case is focused on home products and interior goods, inspired by Nuka Home and similar competitors such as Zara Home, KARE, DiCasa, Bavaria Home, and other home/interior product websites.
 
-- Next.js
-- TypeScript
-- Supabase
-- Vercel
+## Target users
 
-## Running Locally
+SellSmart is useful for:
 
-1. Clone the repository:
+- Business owners who want to compare their prices with competitors.
+- Sales teams who want to understand which products need price adjustments.
+- Managers who want reports, profit overview, and accounting summaries.
+- Small companies that do not have a full data analysis team but still need data-driven decisions.
 
-git clone https://github.com/dhurkaa/SellSmart.git
-cd SellSmart
-Install dependencies:
-npm install
-Create a .env.local file in the root of the project.
-Add the required environment variables:
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
-Start the development server:
-npm run dev
-Environment Variables
+## Main value of the project
 
-Create a .env.local file and add:
+The value of SellSmart is that it combines:
 
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+- Competitor website analysis
+- Product and price signal extraction
+- Pricing recommendation logic
+- Confidence scores
+- Sync logs for transparency
+- CSV/manual fallback if automatic scanning fails
+- Sales, reports, accounting, and settings pages connected to live-data APIs
 
-If additional variables are used in your local setup, add them here as well.
+This makes the app more realistic than a simple dashboard with static data.
 
-Live Project
-GitHub Repository: https://github.com/dhurkaa/SellSmart
-Live URL: https://sell-smart-six.vercel.app
+---
 
-Debugging, Review & Hardening Update
+# Demo duration
 
-Bug Fixed
-The dashboard previously did not handle missing data reliably.
-The retry flow was fixed so it now resends the last real request instead of using unstable state.
-History loading was improved to correctly preserve and restore category and businessGoal.
-Image handling was improved so the primary image no longer remains empty after deletion.
-UX / Feedback Improvements
-Added success messages for:
-valuation generation
-image uploads
-demo data loading
-opening a valuation from history
-Improved error messages for:
-timeout
-network errors
-invalid image
-maximum image count
-invalid form fields
-Strengthened double-submit protection using isSubmitting
-Improved button safety during loading states
-Added clearer retry and session-expiry feedback
+Planned demo time: 5–7 minutes
 
-Refactoring / Cleanup
-Added pendingRequestRef to preserve the latest stable request payload
-Extracted payload construction into buildPendingRequest
-Improved callAssistant logic for better request consistency
-Cleaned up history and image-handling logic
-Added cleanup for image preview URLs
-Hardening / Stability
-Added stronger validation for:
-productName
-location
-category
-condition
-composer
-image type
-image size
-image count
-Limited retry flow to a maximum of 3 attempts
-Improved session and network state handling
-Preserved AuthGuard for route protection
-Added clearer handling for session expiry
-Goal of This Update
+## Demo flow overview
 
-This week’s work focused on making the project:
+### 0:00–0:45 — Introduction
 
-more stable
-easier to demo
-clearer for the user
-harder to break in real edge cases
+I will briefly explain what SellSmart is and why it exists.
+
+Main explanation:
+
+SellSmart is a pricing intelligence platform that helps businesses make smarter product pricing decisions. The system can scan competitor websites, collect public price signals, compare prices, and generate pricing recommendations with confidence scores. It also includes sales, reports, accounting, settings, and sync logs to make the business workflow more complete.
+
+### 0:45–1:30 — Dashboard and layout
+
+I will open the live application and show the premium dashboard layout.
+
+I will explain:
+
+- The shared sidebar/navigation system
+- The SaaS-style interface
+- The main pages of the system
+- How the project is organized around business decision-making
+
+Pages shown briefly:
+
+- Dashboard
+- Pricing
+- Sales
+- Reports
+- Accounting
+- Settings
+- Sync Logs
+- Tutorial
+
+### 1:30–3:20 — Main demo: Pricing intelligence
+
+This is the most important part of the demo.
+
+I will open the Pricing page and show the main workflow:
+
+1. The user opens Pricing.
+2. If no competitor websites are saved, the system redirects to competitor setup.
+3. The user adds competitor websites, for example:
+   - https://www.zarahome.com/xk
+   - https://www.kare-design.com/xk-en
+   - https://dicasahome.com
+4. The user clicks "Analyze Competitor Prices".
+5. The system tries to scan public pages and extract product names and prices.
+6. Extracted products are saved as competitor price signals.
+7. The Pricing table shows products, prices, confidence score, market range, and recommendation status.
+8. Each product includes "Why this recommendation?" to explain the logic.
+
+I will explain that the system does not simply guess prices. It uses market signals, competitor price ranges, confidence scores, and pricing logic.
+
+### 3:20–4:00 — Sync Logs proof
+
+I will open the Sync Logs page.
+
+I will show:
+
+- Domains scanned
+- Pages discovered
+- Pages scanned
+- Products found
+- Signals inserted
+- Failed pages
+- Debug details
+
+This proves that the system has a transparent scanning process and is not just showing random numbers.
+
+### 4:00–4:45 — Plan B / fallback system
+
+I will explain that some websites block crawling or load products dynamically with JavaScript.
+
+Because of that, SellSmart includes fallback options:
+
+- CSV import
+- Manual competitor product entry
+- Sync logs to understand why a scan failed
+
+This makes the project more realistic because real business tools need fallback options when automation cannot access a website.
+
+I will demonstrate either:
+
+- Import CSV, or
+- Add Manual Product
+
+Example CSV columns:
+
+```csv
+product_name,detected_price,source_domain,source_url
+Premium Curtain,49.99,zarahome.com,https://www.zarahome.com/xk/example
+Luxury Carpet,129.90,kare-design.com,https://www.kare-design.com/xk-en/example
+Cotton Bedsheet,35.50,dicasahome.com,https://dicasahome.com/example
