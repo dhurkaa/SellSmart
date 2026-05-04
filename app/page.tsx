@@ -2,7 +2,7 @@
 import AuthGuard from '@/components/auth/AuthGuard';
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 // ---------- Types ----------
@@ -115,6 +115,196 @@ type PendingAssistantRequest = {
   }[];
 };
 
+
+
+type SidebarItem = {
+  href: string;
+  label: string;
+  icon: string;
+};
+
+function DashboardSidebar({
+  navItems,
+  onLogout,
+}: {
+  navItems: SidebarItem[];
+  onLogout: () => void;
+}) {
+  const pathname = usePathname();
+
+  return (
+    <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-[292px] flex-col border-r border-white/60 bg-white/75 backdrop-blur-2xl shadow-[24px_0_70px_-45px_rgba(15,23,42,0.55)]">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.16),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(6,182,212,0.12),_transparent_28%)]" />
+
+      <div className="relative flex h-full flex-col p-5">
+        <Link href="/" className="mb-6 flex items-center gap-3 rounded-3xl bg-slate-950 px-4 py-4 text-white shadow-2xl shadow-indigo-500/20">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-2xl">
+            ⚡
+          </div>
+          <div>
+            <div className="text-lg font-black leading-tight">SellSmart</div>
+            <div className="text-xs font-medium text-slate-300">Company Dashboard</div>
+          </div>
+        </Link>
+
+        <div className="mb-4 rounded-3xl border border-indigo-100 bg-white/65 p-4">
+          <div className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Paneli</div>
+          <div className="mt-1 text-sm text-slate-500">Navigim i shpejtë për biznesin.</div>
+        </div>
+
+        <nav className="custom-scroll flex-1 space-y-2 overflow-y-auto pr-1">
+          {navItems.map((item) => {
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`group flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold transition-all ${
+                  active
+                    ? 'bg-gradient-to-r from-indigo-600 to-cyan-500 text-white shadow-lg shadow-indigo-500/25'
+                    : 'text-slate-600 hover:bg-white hover:text-indigo-600 hover:shadow-sm'
+                }`}
+              >
+                <span className="flex items-center gap-3">
+                  <span className={`text-lg transition-transform ${active ? 'scale-110' : 'group-hover:scale-110'}`}>{item.icon}</span>
+                  <span>{item.label}</span>
+                </span>
+                <span className={`transition-transform ${active ? 'translate-x-0 opacity-100' : 'translate-x-[-4px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`}>
+                  →
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="mt-5 space-y-3">
+          <Link
+            href="/market-intelligence"
+            className="block rounded-3xl bg-gradient-to-br from-indigo-50 to-cyan-50 p-4 text-sm font-bold text-slate-800 ring-1 ring-indigo-100 transition-all hover:shadow-lg"
+          >
+            <div className="flex items-center justify-between">
+              <span>Dashboard i tregut</span>
+              <span>📊</span>
+            </div>
+            <div className="mt-1 text-xs font-medium text-slate-500">Çmime, konkurrentë dhe sinjale reale.</div>
+          </Link>
+
+          <button
+            onClick={onLogout}
+            className="w-full rounded-2xl bg-slate-950 px-4 py-3 text-left text-sm font-bold text-white transition-all hover:bg-rose-600"
+          >
+            Dalje
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+
+function MobileTopbar({
+  navItems,
+  onLogout,
+}: {
+  navItems: SidebarItem[];
+  onLogout: () => void;
+}) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <header className="lg:hidden fixed left-0 right-0 top-0 z-50 border-b border-white/60 bg-white/80 px-4 py-3 backdrop-blur-2xl shadow-[0_18px_45px_-30px_rgba(15,23,42,0.65)]">
+        <div className="flex items-center justify-between gap-3">
+          <Link href="/" className="flex items-center gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-xl text-white shadow-lg shadow-indigo-500/20">
+              ⚡
+            </span>
+            <span>
+              <span className="block text-base font-black leading-tight text-slate-950">SellSmart</span>
+              <span className="block text-xs font-semibold text-slate-500">Company Dashboard</span>
+            </span>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white shadow-lg transition-all active:scale-95"
+            aria-label="Open navigation menu"
+          >
+            ☰ Menu
+          </button>
+        </div>
+      </header>
+
+      {open && (
+        <div className="lg:hidden fixed inset-0 z-[70]">
+          <button
+            type="button"
+            aria-label="Close navigation overlay"
+            onClick={() => setOpen(false)}
+            className="absolute inset-0 bg-slate-950/45 backdrop-blur-sm"
+          />
+
+          <aside className="absolute right-0 top-0 h-full w-[88%] max-w-[390px] overflow-y-auto border-l border-white/60 bg-white/90 p-5 shadow-2xl backdrop-blur-2xl">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <div className="text-xs font-black uppercase tracking-[0.2em] text-indigo-600">Navigation</div>
+                <div className="text-2xl font-black text-slate-950">SellSmart</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="rounded-2xl bg-slate-100 px-4 py-3 text-sm font-black text-slate-700 transition-all active:scale-95"
+                aria-label="Close navigation menu"
+              >
+                ✕
+              </button>
+            </div>
+
+            <nav className="space-y-2">
+              {navItems.map((item) => {
+                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={`flex items-center justify-between rounded-2xl px-4 py-4 text-sm font-black transition-all ${
+                      active
+                        ? 'bg-gradient-to-r from-indigo-600 to-cyan-500 text-white shadow-lg shadow-indigo-500/25'
+                        : 'bg-white/65 text-slate-700 ring-1 ring-slate-200 hover:text-indigo-600'
+                    }`}
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="text-xl">{item.icon}</span>
+                      <span>{item.label}</span>
+                    </span>
+                    <span>→</span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                onLogout();
+              }}
+              className="mt-5 w-full rounded-2xl bg-slate-950 px-4 py-4 text-left text-sm font-black text-white transition-all active:scale-95"
+            >
+              🚪 Dalje
+            </button>
+          </aside>
+        </div>
+      )}
+    </>
+  );
+}
+
 const initialBaseInfo: BaseInfo = {
   category: '',
   productName: '',
@@ -205,7 +395,7 @@ export default function CompanyHome() {
   const [sessionError, setSessionError] = useState<SessionError>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [marketTrend, setMarketTrend] = useState('➡️ i qëndrueshëm');
+  const [marketTrend, setMarketTrend] = useState('➡️ duke analizuar tregun...');
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [dragActive, setDragActive] = useState(false);
   const [analysisStages, setAnalysisStages] = useState<StageItem[]>(defaultStages);
@@ -261,16 +451,22 @@ export default function CompanyHome() {
     return () => window.clearTimeout(timer);
   }, [successMessage]);
 
+  // ***** REPLACED: real market trend derived from valuation confidence *****
   useEffect(() => {
-    const trends = [
-      '📈 kërkesa lokale po forcohet',
-      '📉 presioni nga zbritjet po rritet',
-      '➡️ i qëndrueshëm në tregun tënd',
-      '📈 interes për nivel premium',
-      '📉 oferta agresive nga konkurrenca',
-    ];
-    setMarketTrend(trends[Math.floor(Math.random() * trends.length)]);
-  }, [baseInfo.category, baseInfo.location, baseInfo.productName, businessGoal]);
+    if (valuation && valuation.confidence) {
+      const confidenceNum = parseInt(valuation.confidence, 10) || 50;
+      if (confidenceNum >= 80) {
+        setMarketTrend('📈 besueshmëri e lartë – çmimi i qëndrueshëm');
+      } else if (confidenceNum >= 50) {
+        setMarketTrend('➡️ besueshmëri mesatare – verifikoni me burime shtesë');
+      } else {
+        setMarketTrend('📉 besueshmëri e ulët – mblidhni më shumë sinjale çmimi');
+      }
+    } else {
+      setMarketTrend('📡 në pritje të sinjaleve të tregut');
+    }
+  }, [valuation]);
+  // ***** END OF REPLACEMENT *****
 
   useEffect(() => {
     return () => {
@@ -1139,7 +1335,10 @@ export default function CompanyHome() {
           }
         `}</style>
 
-        <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 p-4 md:p-6 lg:p-8">
+        <DashboardSidebar navItems={navItems} onLogout={handleLogout} />
+        <MobileTopbar navItems={navItems} onLogout={handleLogout} />
+
+        <main className="min-h-screen pt-20 lg:pt-8 lg:pl-[292px] bg-[radial-gradient(circle_at_top_right,_rgba(99,102,241,0.18),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(6,182,212,0.12),_transparent_18%),linear-gradient(135deg,#f8fafc,#ffffff,#eef2ff)] px-4 pb-4 pt-24 md:px-6 md:pb-6 lg:p-8">
           <div className="max-w-[1920px] mx-auto">
             {/* Header Section */}
             <section className="glass-card-strong rounded-3xl p-6 md:p-8 lg:p-10 mb-8 transition-all hover:shadow-xl">
@@ -1195,8 +1394,8 @@ export default function CompanyHome() {
                 </div>
               </div>
 
-              {/* Navigation Bar - Modern Sidebar Style */}
-              <div className="mt-6 pt-6 border-t border-white/30">
+              {/* Mobile Navigation Bar - Desktop uses fixed sidebar */}
+              <div className="mt-6 pt-6 border-t border-white/30 lg:hidden">
                 <div className="flex flex-wrap items-center gap-2">
                   {navItems.map((item, index) => (
                     <Link

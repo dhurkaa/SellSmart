@@ -1,6 +1,6 @@
 // app/products/page.tsx
 'use client';
-
+import DashboardShell from '@/components/layout/dashboard-shell';
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -757,7 +757,7 @@ export default function ProductsPage() {
 
   // Render
   return (
-    <>
+      <DashboardShell>
       <style jsx>{`
         @keyframes slideIn {
           from { opacity: 0; transform: translateY(20px); }
@@ -971,6 +971,6 @@ export default function ProductsPage() {
           productName={productToDelete?.name || ''}
         />
       </div>
-    </>
+    </DashboardShell>
   );
 }

@@ -4,7 +4,7 @@ import AuthGuard from '@/components/auth/AuthGuard';
 import { PieLabelRenderProps } from 'recharts';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import {
   LineChart,
@@ -171,6 +171,89 @@ const EMPTY_RESPONSE: MarketApiResponse = {
     totalRegions: 0,
   },
 };
+
+
+type SidebarItem = {
+  href: string;
+  label: string;
+};
+
+function MarketSidebar({
+  navItems,
+  onLogout,
+}: {
+  navItems: SidebarItem[];
+  onLogout: () => void;
+}) {
+  const pathname = usePathname();
+
+  return (
+    <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-[292px] flex-col border-r border-white/60 bg-white/75 backdrop-blur-2xl shadow-[24px_0_70px_-45px_rgba(15,23,42,0.55)]">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.16),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(6,182,212,0.12),_transparent_28%)]" />
+
+      <div className="relative flex h-full flex-col p-5">
+        <Link href="/" className="mb-6 flex items-center gap-3 rounded-3xl bg-slate-950 px-4 py-4 text-white shadow-2xl shadow-indigo-500/20">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-2xl">
+            ⚡
+          </div>
+          <div>
+            <div className="text-lg font-black leading-tight">SellSmart</div>
+            <div className="text-xs font-medium text-slate-300">Market Intelligence</div>
+          </div>
+        </Link>
+
+        <div className="mb-4 rounded-3xl border border-indigo-100 bg-white/65 p-4">
+          <div className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Paneli</div>
+          <div className="mt-1 text-sm text-slate-500">Navigim i shpejtë për biznesin.</div>
+        </div>
+
+        <nav className="custom-scroll flex-1 space-y-2 overflow-y-auto pr-1">
+          {navItems.map((item) => {
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`group flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold transition-all ${
+                  active
+                    ? 'bg-gradient-to-r from-indigo-600 to-cyan-500 text-white shadow-lg shadow-indigo-500/25'
+                    : 'text-slate-600 hover:bg-white hover:text-indigo-600 hover:shadow-sm'
+                }`}
+              >
+                <span>{item.label}</span>
+                <span className={`transition-transform ${active ? 'translate-x-0 opacity-100' : 'translate-x-[-4px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`}>
+                  →
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="mt-5 space-y-3">
+          <Link
+            href="/market-intelligence"
+            className="block rounded-3xl bg-gradient-to-br from-indigo-50 to-cyan-50 p-4 text-sm font-bold text-slate-800 ring-1 ring-indigo-100 transition-all hover:shadow-lg"
+          >
+            <div className="flex items-center justify-between">
+              <span>Dashboard i tregut</span>
+              <span>📊</span>
+            </div>
+            <div className="mt-1 text-xs font-medium text-slate-500">Çmime, konkurrentë dhe sinjale reale.</div>
+          </Link>
+
+          <button
+            onClick={onLogout}
+            className="w-full rounded-2xl bg-slate-950 px-4 py-3 text-left text-sm font-bold text-white transition-all hover:bg-rose-600"
+          >
+            Dalje
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 
 export default function MarketIntelligencePage() {
   const router = useRouter();
@@ -412,12 +495,14 @@ export default function MarketIntelligencePage() {
         .signal-hold { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(255,255,255,0.7)); border-left: 4px solid #f59e0b; }
       `}</style>
 
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,_rgba(99,102,241,0.18),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(6,182,212,0.12),_transparent_18%),linear-gradient(135deg,#f8fafc,#ffffff,#eef2ff)] p-4 md:p-6 lg:p-8">
+      <MarketSidebar navItems={navItems} onLogout={handleLogout} />
+
+      <main className="min-h-screen lg:pl-[292px] bg-[radial-gradient(circle_at_top_right,_rgba(99,102,241,0.18),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(6,182,212,0.12),_transparent_18%),linear-gradient(135deg,#f8fafc,#ffffff,#eef2ff)] p-4 md:p-6 lg:p-8">
         <div className="max-w-[1920px] mx-auto">
           <section className="glass-card-strong rounded-[28px] p-6 md:p-8 mb-8">
             <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-8">
               <div>
-                <div className="flex flex-wrap items-center gap-3 mb-6">
+                <div className="flex flex-wrap items-center gap-3 mb-6 lg:hidden">
                   <span className="px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500/15 to-cyan-500/15 text-indigo-700 font-semibold text-sm border border-indigo-200/50">
                     Market Intelligence • Të dhëna reale
                   </span>
